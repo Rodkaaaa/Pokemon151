@@ -13,9 +13,9 @@ type Props = {
 const PokemonCard = ({ pokemon }: Props) => {
     /* console.log(pokeApi.defaults) */
     const router = useRouter()
-
+    
     const onClick = () => {
-      router.push(`/pokemon/${pokemon.id}`)
+      router.push(`/pokemon/name/${pokemon.name}`)
     }
     return (
         <Grid xs={6} sm={3} md={2} xl={1} key={pokemon.id}>

@@ -21,7 +21,7 @@ const Navbar = (props: Props) => {
       padding: '0px 20px',
       background: theme?.colors?.gray400.value
     }}>
-        <NextLink href="/" style={{display: 'flex', flexDirection: 'row'}}>
+      <NextLink href="/" style={{ display: 'flex', flexDirection: 'row' }}>
         <Image
           src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
           alt='icono app'
@@ -30,12 +30,12 @@ const Navbar = (props: Props) => {
         />
         <Text color='white' h2>P</Text>
         <Text color='white' h3>okemom</Text>
-        </NextLink>
-      <Spacer css={{ flex: 1 }} />
-      <NextLink href="/favoritos/userfav">
-      <Text color='white'>Favoritos</Text>
       </NextLink>
-      
+      <Spacer css={{ flex: 1 }} />
+      <NextLink href="/favoritos/" style={{marginRight: '20px'}}>
+        <Text color='white'>Favoritos</Text>
+      </NextLink>
+
     </div>
   )
 }

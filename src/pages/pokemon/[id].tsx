@@ -1,10 +1,15 @@
-import Layout from '@/components/layouts/Layout'
+import { useState } from 'react'
 import { GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
 import { GetStaticPaths } from 'next'
+import { useRouter } from 'next/router';
+
+import confetti from 'canvas-confetti';
+
+import { Button, Card, Container, Grid, Text, Image } from '@nextui-org/react';
+import { Layout } from '../../components/layouts'
 import { pokeApi } from '@/api';
 import { Pokemon } from '@/interfaces';
-import { Button, Card, Container, Grid, Text, Image } from '@nextui-org/react';
+import { localFavorites } from '@/utils';
 
 
 interface Props {
@@ -15,7 +20,37 @@ const PokemonPage = ({ pokemon }: Props) => {
 
   const router = useRouter();
 
-  console.log(pokemon.sprites)
+  const [isInFavorite, setIsInFavorite] = useState(localFavorites.existInFavorites(pokemon.id))
+
+  /* console.log(pokemon.sprites) */
+
+  const onToggleFavorite = () => {
+    localFavorites.toggleFavorite(pokemon.id)
+    setIsInFavorite(!isInFavorite)
+
+    if (isInFavorite) {
+
+      return (
+        <>
+          {confetti({
+            zIndex: 999,
+            particleCount: 100,
+            spread: 160,
+            angle: -100,
+            origin: {
+              x: 1,
+              y: 0
+            }
+          })}
+        </>
+      )
+    }
+  }
+
+
+
+
+
 
   return (
     <Layout titulo={`Listado Pokemon #${pokemon.id} - ${pokemon.name}`}>
@@ -40,8 +75,13 @@ const PokemonPage = ({ pokemon }: Props) => {
               <Text h1 transform='capitalize'>{pokemon.name}</Text>
               <Button
                 color='gradient'
-                ghost>
-                Guardar en Favoritos
+                ghost={!isInFavorite}
+                onPress={onToggleFavorite}
+                key={pokemon.id}
+              >
+                {
+                  isInFavorite ? 'En Favoritos' : 'Agregar a Favoritos'
+                }
               </Button>
             </Card.Header>
             <Card.Body>
@@ -85,6 +125,7 @@ const PokemonPage = ({ pokemon }: Props) => {
 //imprime por conolsa del servidor
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const pokemon151: string[] = [...Array(151)].map((value, index) => `${index + 1}`);
+  
   return {
     paths: pokemon151.map((id) => ({
       params: { id }

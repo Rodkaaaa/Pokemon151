@@ -2,7 +2,7 @@ import {Navbar} from '../ui'
 import Head from "next/head"
 
 type Props = {
-    children: JSX.Element,
+    children?: JSX.Element|JSX.Element[],
     titulo: string
 }
 
@@ -25,4 +25,4 @@ const Layout = ({ children, titulo }: Props) => {
     )
 }
 
-export default Layout;
+export {Layout};
