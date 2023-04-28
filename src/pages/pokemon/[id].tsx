@@ -10,6 +10,8 @@ import { Layout } from '../../components/layouts'
 import { pokeApi } from '@/api';
 import { Pokemon } from '@/interfaces';
 import { getPokemonInfo, localFavorites } from '@/utils';
+import { Other, Crystal } from '../../interfaces/pokemon-full';
+import { redirect } from 'next/dist/server/api-utils';
 
 
 interface Props {
@@ -61,7 +63,7 @@ const PokemonPage = ({ pokemon }: Props) => {
           <Card isHoverable css={{ padding: '30px' }}>
             <Card.Body>
               <Card.Image
-                src={pokemon.sprites.other?.dream_world.front_default || 'no_image.png'}
+                src={pokemon.sprites.other?.dream_world.front_default || pokemon.sprites.other?.home.front_default || 'no image'}
                 alt={pokemon.name}
                 width='100%'
                 height={200}>
@@ -125,25 +127,38 @@ const PokemonPage = ({ pokemon }: Props) => {
 //imprime por conolsa del servidor
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const pokemon151: string[] = [...Array(151)].map((value, index) => `${index + 1}`);
-  
+
   return {
     paths: pokemon151.map((id) => ({
       params: { id }
     }))
     ,
-    fallback: false
+    //fallback: false
+    fallback: 'blocking'
   }
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };
 
-  return {
-    props: {
-      pokemon:  await getPokemonInfo( id )
+  const pokemon = await getPokemonInfo(id)
+
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: true,
+      }
     }
   }
-}
 
+
+  return {
+    props: {
+      pokemon
+    },
+    revalidate: 86400,
+  }
+}
 
 export default PokemonPage
